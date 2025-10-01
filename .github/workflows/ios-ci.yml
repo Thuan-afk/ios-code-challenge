@@ -1,0 +1,27 @@
+name: IOSCodeChallenge
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Xcode
+        run: sudo xcode-select -switch /Applications/Xcode.app
+
+      - name: Build and Test
+        run: |
+          xcodebuild \
+            -project IOSCodeChallenge.xcodeproj \
+            -scheme IOSCodeChallenge \
+            -sdk iphonesimulator \
+            -destination 'platform=iOS Simulator,name=iPhone 16' \
+            clean test CODE_SIGNING_ALLOWED=NO

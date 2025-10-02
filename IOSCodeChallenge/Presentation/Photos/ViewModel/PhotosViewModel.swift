@@ -8,21 +8,49 @@
 import Foundation
 import Combine
 
-class PhotosViewModel: ObservableObject {
+protocol PhotosViewModelInput {
+    var query: String { get set }
+    func loadImages()
+}
+
+protocol PhotosViewModelOutput: AnyObject {
+    var photos: [Photo] { get }
+    var errorMessage: String? { get }
+    var isLoading: Bool { get }
+}
+
+class PhotosViewModel: ObservableObject, PhotosViewModelInput, PhotosViewModelOutput {
     
     private let photosUseCase: PhotosUseCase
     private var cancellables = Set<AnyCancellable>()
     
     private var page = 1
-    private let limit = 100
+    private let limit = 5
     private var hasMorePages = true
     
+    //Input
+    @Published var query: String = ""
+    
+    //Output
     @Published private(set) var photos: [Photo] = []
     @Published private(set) var errorMessage: String?
     @Published private(set) var isLoading: Bool = false
     
+    private var allImages: [Photo] = []
+    
     init(photosUseCase: PhotosUseCase) {
         self.photosUseCase = photosUseCase
+        bind()
+    }
+    
+    private func bind() {
+        $query
+            .debounce(for: .milliseconds(500), scheduler: DispatchQueue.main)
+            .removeDuplicates()
+            .sink { [weak self] text in
+                self?.filterImages(query: text)
+            }
+            .store(in: &cancellables)
     }
     
     func loadImages() {
@@ -56,9 +84,21 @@ class PhotosViewModel: ObservableObject {
                 self.hasMorePages = false
             }
             self.page += 1
-            self.photos += data
+            self.allImages += data
+            self.photos = allImages
         }
         .store(in: &cancellables)
+    }
+    
+    private func filterImages(query: String) {
+        if query.isEmpty {
+            photos = allImages
+        } else {
+            photos = allImages.filter {
+                $0.id.contains(query) ||
+                $0.author.localizedCaseInsensitiveContains(query)
+            }
+        }
     }
     
     func refreshPhotos() {

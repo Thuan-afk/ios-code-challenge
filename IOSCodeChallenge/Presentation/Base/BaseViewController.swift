@@ -22,6 +22,7 @@ class BaseViewController: UIViewController {
         navigationController?.navigationBar.tintColor = .white
         
         view.backgroundColor = .systemBackground
+        hideKeyboardWhenTappedAround()
         
         setupSubview()
         updateConstraint()

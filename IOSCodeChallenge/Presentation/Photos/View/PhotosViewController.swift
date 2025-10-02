@@ -22,8 +22,12 @@ class PhotosViewController: BaseViewController {
         tf.layer.borderColor = UIColor.systemGray4.cgColor
         tf.backgroundColor = UIColor.systemGray6
         tf.clipsToBounds = true
+        tf.clearButtonMode = .whileEditing
+        tf.returnKeyType = .search
+        tf.autocorrectionType = .no
+        tf.autocapitalizationType = .none
+        tf.delegate = self
         tf.setLeftPadding(8)
-        tf.setRightPadding(8)
         return tf
     }()
     
@@ -90,6 +94,13 @@ class PhotosViewController: BaseViewController {
     }
 
     override func bindViewModel() {
+        NotificationCenter.default.publisher(for: UITextField.textDidChangeNotification, object: searchTextField)
+                    .compactMap { ($0.object as? UITextField)?.text }
+                    .debounce(for: .milliseconds(500), scheduler: DispatchQueue.main)
+                    .removeDuplicates()
+                    .assign(to: \.query, on: viewModel)
+                    .store(in: &cancellables)
+        
         viewModel.$photos
                     .receive(on: DispatchQueue.main)
                     .sink { [weak self] _ in
@@ -117,9 +128,43 @@ class PhotosViewController: BaseViewController {
     }
     
     @objc private func didPullToRefresh() {
-        print("refresh")
         viewModel.refreshPhotos()
         refreshControl.endRefreshing()
+    }
+}
+
+extension PhotosViewController: UITextFieldDelegate {
+    func textField(_ textField: UITextField,
+                   shouldChangeCharactersIn range: NSRange,
+                   replacementString string: String) -> Bool {
+        // Do not allow emoji input
+        if string.containsEmoji {
+            return false
+        }
+
+        // 15 character limit
+        let currentText = textField.text ?? ""
+        guard let stringRange = Range(range, in: currentText) else { return false }
+        let updatedText = currentText.replacingCharacters(in: stringRange, with: string)
+        if updatedText.count > 15 {
+            return false
+        }
+
+        // Only accept no accents
+        let nonDiacritic = string.folding(options: .diacriticInsensitive, locale: .current)
+        if string != nonDiacritic {
+            return false
+        }
+
+        // Allow characters only
+        // a-z, A-Z, 0-9, và !@#$%^&*():.”
+        let allowedChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*():.”"
+        let allowedSet = CharacterSet(charactersIn: allowedChars)
+        if string.rangeOfCharacter(from: allowedSet.inverted) != nil {
+            return false
+        }
+
+        return true
     }
 }
 

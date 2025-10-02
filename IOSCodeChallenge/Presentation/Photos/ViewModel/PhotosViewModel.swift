@@ -108,6 +108,8 @@ class PhotosViewModel: ObservableObject, PhotosViewModelInput, PhotosViewModelOu
             }
         } receiveValue: { [weak self] data in
             guard let self = self else { return }
+            self.isLoading = false
+            self.isFooterLoading = false
             if data.isEmpty {
                 self.hasMorePages = false
             }

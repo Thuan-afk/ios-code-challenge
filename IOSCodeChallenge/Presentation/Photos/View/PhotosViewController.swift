@@ -135,6 +135,7 @@ class PhotosViewController: BaseViewController {
     }
     
     @objc private func didPullToRefresh() {
+        searchTextField.text = ""
         viewModel.refreshPhotos()
         refreshControl.endRefreshing()
     }
@@ -195,12 +196,16 @@ extension PhotosViewController: UITableViewDelegate {
 
 extension PhotosViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.photos.count > 0 ? viewModel.photos.count : 1
+        return (viewModel.photos.count > 0) ? viewModel.photos.count : 1
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if viewModel.photos.isEmpty {
-                // Tạo cell empty
+            let text = searchTextField.text ?? ""
+            if text.isEmpty {
+                return UITableViewCell()
+            }
+            // Create cell empty
             guard let cell = tableView.dequeueReusableCell(withIdentifier: EmptyTableViewCell.reuseIdentifier, for: indexPath) as? EmptyTableViewCell else {
                 return UITableViewCell()
             }
@@ -236,7 +241,7 @@ extension PhotosViewController: UITableViewDataSource {
 extension PhotosViewController: UITableViewDataSourcePrefetching {
     func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
         for indexPath in indexPaths {
-            PhotoCacheManager.shared.loadImage(from: viewModel.photos[indexPath.row].resizedURL())
+            PhotoCacheManager.shared.preloadImage(from: viewModel.photos[indexPath.row].resizedURL(), originalWidth: viewModel.photos[indexPath.row].width, originalHeight: viewModel.photos[indexPath.row].height)
         }
     }
 

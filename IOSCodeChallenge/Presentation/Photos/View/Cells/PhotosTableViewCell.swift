@@ -112,16 +112,10 @@ class PhotosTableViewCell: UITableViewCell {
         }
     }
 
-    func configure(photo: Photo) {
-        DispatchQueue.global(qos: .background).async {
-            PhotoCacheManager.shared.loadImage(from: photo.resizedURL()) { [weak self] image in
-                if let image = image {
-                    DispatchQueue.main.async {
-                        self?.photoImageView.image = image
-                        self?.showSkeleton(false)
-                    }
-                }
-            }
+    func configure(photo: Photo) {        
+        PhotoCacheManager.shared.loadImage(from: photo.resizedURL(), originalWidth: photo.width, originalHeight: photo.height) { [weak self] image in
+            self?.photoImageView.image = image
+            self?.showSkeleton(false)
         }
         
         authorLabel.text = photo.author

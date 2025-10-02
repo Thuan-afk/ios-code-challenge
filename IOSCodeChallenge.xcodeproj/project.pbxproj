@@ -31,6 +31,8 @@
 		22B361CA2E8E1F1700221315 /* MockPhotosRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22B361C92E8E1F1700221315 /* MockPhotosRepository.swift */; };
 		22B361CE2E8E215400221315 /* PhotosUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22B361CD2E8E215400221315 /* PhotosUseCaseTests.swift */; };
 		22B361D22E8E249300221315 /* PhotosViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22B361D12E8E249300221315 /* PhotosViewModelTests.swift */; };
+		22B361D52E8E514300221315 /* StringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22B361D42E8E514300221315 /* StringExtension.swift */; };
+		22B361D72E8E5AF800221315 /* UIViewControllerExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22B361D62E8E5AF800221315 /* UIViewControllerExtension.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -57,7 +59,7 @@
 		22B3619D2E8D7A5C00221315 /* PhotoDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoDTO.swift; sourceTree = "<group>"; };
 		22B361A02E8D7B3800221315 /* PhotoApiService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoApiService.swift; sourceTree = "<group>"; };
 		22B361A32E8D7C4E00221315 /* PhotosRepositoryImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosRepositoryImpl.swift; sourceTree = "<group>"; };
-		22B361A52E8DE5AC00221315 /* PhotosViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PhotosViewModel.swift; path = IOSCodeChallenge/Data/Repositorys/PhotosViewModel.swift; sourceTree = SOURCE_ROOT; };
+		22B361A52E8DE5AC00221315 /* PhotosViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PhotosViewModel.swift; path = IOSCodeChallenge/Presentation/Photos/ViewModel/PhotosViewModel.swift; sourceTree = SOURCE_ROOT; };
 		22B361A82E8DEB1E00221315 /* PhotosTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosTableViewCell.swift; sourceTree = "<group>"; };
 		22B361AB2E8DF21E00221315 /* PhotoCacheManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoCacheManager.swift; sourceTree = "<group>"; };
 		22B361AF2E8DF6C700221315 /* AppFlowCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppFlowCoordinator.swift; sourceTree = "<group>"; };
@@ -71,6 +73,8 @@
 		22B361C92E8E1F1700221315 /* MockPhotosRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockPhotosRepository.swift; sourceTree = "<group>"; };
 		22B361CD2E8E215400221315 /* PhotosUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosUseCaseTests.swift; sourceTree = "<group>"; };
 		22B361D12E8E249300221315 /* PhotosViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosViewModelTests.swift; sourceTree = "<group>"; };
+		22B361D42E8E514300221315 /* StringExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtension.swift; sourceTree = "<group>"; };
+		22B361D62E8E5AF800221315 /* UIViewControllerExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewControllerExtension.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -155,10 +159,10 @@
 		22B3618B2E8D6D6100221315 /* Presentation */ = {
 			isa = PBXGroup;
 			children = (
-				22B361C32E8E1D8200221315 /* Utils */,
 				22B361C02E8E1C0100221315 /* Base */,
 				22B361B62E8DFC1500221315 /* Flows */,
 				22B3618E2E8D6F2500221315 /* Photos */,
+				22B361C32E8E1D8200221315 /* Utils */,
 			);
 			path = Presentation;
 			sourceTree = "<group>";
@@ -188,7 +192,7 @@
 		22B3618E2E8D6F2500221315 /* Photos */ = {
 			isa = PBXGroup;
 			children = (
-				22B361902E8D6F4C00221315 /* ViewModel */,
+				22B361D32E8E2EAA00221315 /* ViewModel */,
 				22B3618F2E8D6F4400221315 /* View */,
 			);
 			path = Photos;
@@ -201,14 +205,6 @@
 				22B361912E8D6FA100221315 /* PhotosViewController.swift */,
 			);
 			path = View;
-			sourceTree = "<group>";
-		};
-		22B361902E8D6F4C00221315 /* ViewModel */ = {
-			isa = PBXGroup;
-			children = (
-				22B361A52E8DE5AC00221315 /* PhotosViewModel.swift */,
-			);
-			path = ViewModel;
 			sourceTree = "<group>";
 		};
 		22B361932E8D786000221315 /* Repositorys */ = {
@@ -320,6 +316,8 @@
 			isa = PBXGroup;
 			children = (
 				22B361C52E8E1DCF00221315 /* UITextFieldExtension.swift */,
+				22B361D42E8E514300221315 /* StringExtension.swift */,
+				22B361D62E8E5AF800221315 /* UIViewControllerExtension.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -354,6 +352,14 @@
 				22B361D12E8E249300221315 /* PhotosViewModelTests.swift */,
 			);
 			path = Photos;
+			sourceTree = "<group>";
+		};
+		22B361D32E8E2EAA00221315 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				22B361A52E8DE5AC00221315 /* PhotosViewModel.swift */,
+			);
+			path = ViewModel;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -461,6 +467,7 @@
 				22B3619E2E8D7A5C00221315 /* PhotoDTO.swift in Sources */,
 				22B361972E8D78D800221315 /* Photo.swift in Sources */,
 				22B361B02E8DF6C700221315 /* AppFlowCoordinator.swift in Sources */,
+				22B361D72E8E5AF800221315 /* UIViewControllerExtension.swift in Sources */,
 				22B361C22E8E1C1D00221315 /* BaseViewController.swift in Sources */,
 				22B3619B2E8D79C000221315 /* PhotosUseCase.swift in Sources */,
 				22B361B52E8DF75800221315 /* PhotosSceneDIContainer.swift in Sources */,
@@ -468,6 +475,7 @@
 				22B361B82E8DFC2D00221315 /* PhotoFlowCoordinator.swift in Sources */,
 				22B361A42E8D7C4E00221315 /* PhotosRepositoryImpl.swift in Sources */,
 				22B361BA2E8DFE5400221315 /* AppConfiguration.swift in Sources */,
+				22B361D52E8E514300221315 /* StringExtension.swift in Sources */,
 				22B361C62E8E1DCF00221315 /* UITextFieldExtension.swift in Sources */,
 				22B361992E8D797A00221315 /* PhotosRepository.swift in Sources */,
 				22B361B32E8DF72A00221315 /* AppDIContainer.swift in Sources */,

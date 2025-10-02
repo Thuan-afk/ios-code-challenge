@@ -15,6 +15,7 @@ struct Photo {
     let height: Int
     let url: String
     let download_url: String
+    let hightCell: CGFloat
 }
 
 extension Photo {

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 struct PhotoDTO: Decodable {
     let id: String
@@ -24,7 +25,13 @@ extension PhotoDTO {
             width: width,
             height: height,
             url: url,
-            download_url: download_url
+            download_url: download_url,
+            hightCell: calculateHeightCell()
         )
+    }
+    
+    func calculateHeightCell() -> CGFloat {
+        let widthScreen = UIScreen.main.bounds.width
+        return (CGFloat(height) * widthScreen)/CGFloat(width) + 75
     }
 }

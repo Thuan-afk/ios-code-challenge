@@ -25,5 +25,5 @@ jobs:
             -project IOSCodeChallenge.xcodeproj \
             -scheme IOSCodeChallenge \
             -sdk iphonesimulator \
-            -destination 'platform=iOS Simulator,OS=latest,name=iPhone 15 Pro' \
+            -destination 'platform=iOS Simulator,OS=latest,name=iPhone 16' \
             clean test CODE_SIGNING_ALLOWED=NO

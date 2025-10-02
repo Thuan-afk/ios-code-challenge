@@ -25,7 +25,7 @@ class PhotosViewModel: ObservableObject, PhotosViewModelInput, PhotosViewModelOu
     private var cancellables = Set<AnyCancellable>()
     
     private var page = 1
-    private let limit = 5
+    private let limit = 100
     private var hasMorePages = true
     
     //Input

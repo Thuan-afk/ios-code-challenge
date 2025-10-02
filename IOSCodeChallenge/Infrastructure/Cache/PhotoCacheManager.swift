@@ -11,7 +11,12 @@ import UIKit
 class PhotoCacheManager {
     static let shared = PhotoCacheManager()
 
-    private let cache = NSCache<NSString, UIImage>()
+    private let cache: NSCache<NSString, UIImage> = {
+        let cache = NSCache<NSString, UIImage>()
+        cache.totalCostLimit = 120 * 1024 * 1024
+        cache.countLimit = 200
+        return cache
+    }()
 
     func loadImage(from urlString: String, completion: @escaping (UIImage?) -> Void) {
         if let cachedImage = cache.object(forKey: urlString as NSString) {

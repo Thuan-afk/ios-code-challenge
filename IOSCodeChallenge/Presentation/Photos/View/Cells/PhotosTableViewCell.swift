@@ -37,6 +37,11 @@ class PhotosTableViewCell: UITableViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        photoImageView.image = nil
+    }
 
     func setupSubview() {
         contentView.addSubview(photoImageView)
@@ -49,14 +54,16 @@ class PhotosTableViewCell: UITableViewCell {
         NSLayoutConstraint.activate([
             photoImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             photoImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            photoImageView.topAnchor.constraint(equalTo: contentView.topAnchor)
+            photoImageView.topAnchor.constraint(equalTo: contentView.topAnchor),
+            photoImageView.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width)
         ])
 
         authorLabel.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             authorLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 8),
             authorLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -8),
-            authorLabel.topAnchor.constraint(equalTo: photoImageView.bottomAnchor, constant: 8)
+            authorLabel.topAnchor.constraint(equalTo: photoImageView.bottomAnchor, constant: 8),
+            authorLabel.heightAnchor.constraint(equalToConstant: 22)
         ])
 
         sizeLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -64,7 +71,8 @@ class PhotosTableViewCell: UITableViewCell {
             sizeLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 8),
             sizeLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -8),
             sizeLabel.topAnchor.constraint(equalTo: authorLabel.bottomAnchor, constant: 4),
-            sizeLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16)
+            sizeLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16),
+            authorLabel.heightAnchor.constraint(equalToConstant: 22)
         ])
     }
 
@@ -81,11 +89,6 @@ class PhotosTableViewCell: UITableViewCell {
             }
         }
         
-        let width = UIScreen.main.bounds.width
-        let height = (CGFloat(photo.height) * width)/CGFloat(photo.width)
-        photoImageView.widthAnchor.constraint(equalToConstant: width).isActive = true
-        photoImageView.heightAnchor.constraint(equalToConstant: height).isActive = true
-
         authorLabel.text = photo.author
         sizeLabel.text = "Size: \(photo.width) x \(photo.height)"
     }

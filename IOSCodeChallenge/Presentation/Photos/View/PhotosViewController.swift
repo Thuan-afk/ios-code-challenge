@@ -194,6 +194,10 @@ extension PhotosViewController: UITableViewDataSource {
         return cell
     }
     
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return viewModel.photos[indexPath.row].hightCell
+    }
+    
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         guard viewModel.isLoading else { return nil }
         let spinner = UIActivityIndicatorView(style: .medium)

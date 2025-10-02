@@ -27,6 +27,15 @@ class PhotosViewController: BaseViewController {
         return tf
     }()
     
+    private lazy var refreshControl: UIRefreshControl = {
+        let refreshControl = UIRefreshControl()
+        refreshControl.attributedTitle = NSAttributedString(string: "Refresh...")
+        refreshControl.addAction(UIAction { [weak self] _ in
+            self?.didPullToRefresh()
+        }, for: .valueChanged)
+        return refreshControl
+    }()
+    
     private lazy var tableView: UITableView = {
         let tv = UITableView()
         tv.register(PhotosTableViewCell.self, forCellReuseIdentifier: PhotosTableViewCell.reuseIdentifier)
@@ -35,6 +44,7 @@ class PhotosViewController: BaseViewController {
         tv.rowHeight = UITableView.automaticDimension
         tv.estimatedRowHeight = 300
         tv.separatorStyle = .none
+        tv.refreshControl = refreshControl
         return tv
     }()
     
@@ -104,6 +114,12 @@ class PhotosViewController: BaseViewController {
                 }
             }
             .store(in: &cancellables)
+    }
+    
+    @objc private func didPullToRefresh() {
+        print("refresh")
+        viewModel.refreshPhotos()
+        refreshControl.endRefreshing()
     }
 }
 

@@ -60,4 +60,11 @@ class PhotosViewModel: ObservableObject {
         }
         .store(in: &cancellables)
     }
+    
+    func refreshPhotos() {
+        page = 1
+        hasMorePages = true
+        photos = []
+        photos.removeAll()
+    }
 }

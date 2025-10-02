@@ -13,8 +13,8 @@ final class PhotosUseCaseTests: XCTestCase {
     func test_GetPhotos_WhenSuccess() async throws {
         let mockRepo = MockPhotosRepository()
         mockRepo.photos = [
-            Photo(id: "0", author: "Alejandro Escamilla", width: 5000, height: 3333, url: "https://unsplash.com/photos/yC-Yzbqy7PY", download_url: "https://picsum.photos/id/0/5000/3333"),
-            Photo(id: "1", author: "Alejandro Escamilla", width: 5000, height: 3333, url: "https://unsplash.com/photos/LNRyGwIJr5c", download_url: "https://picsum.photos/id/1/5000/3333")
+            Photo(id: "0", author: "Alejandro Escamilla", width: 5000, height: 3333, url: "https://unsplash.com/photos/yC-Yzbqy7PY", download_url: "https://picsum.photos/id/0/5000/3333", hightCell: 0),
+            Photo(id: "1", author: "Alejandro Escamilla", width: 5000, height: 3333, url: "https://unsplash.com/photos/LNRyGwIJr5c", download_url: "https://picsum.photos/id/1/5000/3333", hightCell: 0)
         ]
         let useCase = PhotosUseCase(repository: mockRepo)
 

@@ -43,8 +43,10 @@ class PhotosViewController: BaseViewController {
     private lazy var tableView: UITableView = {
         let tv = UITableView()
         tv.register(PhotosTableViewCell.self, forCellReuseIdentifier: PhotosTableViewCell.reuseIdentifier)
+        tv.register(EmptyTableViewCell.self, forCellReuseIdentifier: EmptyTableViewCell.reuseIdentifier)
         tv.dataSource = self
         tv.delegate = self
+        tv.prefetchDataSource = self
         tv.rowHeight = UITableView.automaticDimension
         tv.estimatedRowHeight = 300
         tv.separatorStyle = .none
@@ -58,6 +60,11 @@ class PhotosViewController: BaseViewController {
         let view = PhotosViewController()
         view.viewModel = viewModel
         return view
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        viewModel.cancelCallApi()
     }
 
     override func viewDidLoad() {
@@ -108,12 +115,12 @@ class PhotosViewController: BaseViewController {
                     }
                     .store(in: &cancellables)
                 
-                viewModel.$errorMessage
-                    .compactMap { $0 }
-                    .sink { error in
-                        print("Error: \(error)")
-                    }
-                    .store(in: &cancellables)
+        viewModel.$errorMessage
+            .compactMap { $0 }
+            .sink { [weak self] errorMessage in
+                self?.showAlert(message: errorMessage)
+            }
+            .store(in: &cancellables)
         
         viewModel.$isLoading
             .receive(on: DispatchQueue.main)
@@ -128,8 +135,15 @@ class PhotosViewController: BaseViewController {
     }
     
     @objc private func didPullToRefresh() {
+        searchTextField.text = ""
         viewModel.refreshPhotos()
         refreshControl.endRefreshing()
+    }
+    
+    private func showAlert(message: String) {
+        let alert = UIAlertController(title: "", message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        present(alert, animated: true)
     }
 }
 
@@ -182,24 +196,37 @@ extension PhotosViewController: UITableViewDelegate {
 
 extension PhotosViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.photos.count
+        return (viewModel.photos.count > 0) ? viewModel.photos.count : 1
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: PhotosTableViewCell.reuseIdentifier, for: indexPath) as? PhotosTableViewCell else {
-            return UITableViewCell()
+        if viewModel.photos.isEmpty {
+            let text = searchTextField.text ?? ""
+            if text.isEmpty {
+                return UITableViewCell()
+            }
+            // Create cell empty
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: EmptyTableViewCell.reuseIdentifier, for: indexPath) as? EmptyTableViewCell else {
+                return UITableViewCell()
+            }
+            cell.selectionStyle = .none
+            return cell
+        } else {
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: PhotosTableViewCell.reuseIdentifier, for: indexPath) as? PhotosTableViewCell else {
+                return UITableViewCell()
+            }
+            let item = viewModel.photos[indexPath.row]
+            cell.configure(photo: item)
+            return cell
         }
-        let item = viewModel.photos[indexPath.row]
-        cell.configure(photo: item)
-        return cell
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return viewModel.photos[indexPath.row].hightCell
+        return viewModel.photos.count > 0 ? viewModel.photos[indexPath.row].hightCell : tableView.frame.height
     }
     
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        guard viewModel.isLoading else { return nil }
+        guard viewModel.isFooterLoading else { return nil }
         let spinner = UIActivityIndicatorView(style: .medium)
         spinner.startAnimating()
         spinner.frame = CGRect(x: 0, y: 0, width: tableView.bounds.width, height: 44)
@@ -207,6 +234,20 @@ extension PhotosViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        viewModel.isLoading ? 44 : 0
+        viewModel.isFooterLoading ? 44 : 0
+    }
+}
+
+extension PhotosViewController: UITableViewDataSourcePrefetching {
+    func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
+        for indexPath in indexPaths {
+            PhotoCacheManager.shared.preloadImage(from: viewModel.photos[indexPath.row].resizedURL(), originalWidth: viewModel.photos[indexPath.row].width, originalHeight: viewModel.photos[indexPath.row].height)
+        }
+    }
+
+    func tableView(_ tableView: UITableView, cancelPrefetchingForRowsAt indexPaths: [IndexPath]) {
+        for indexPath in indexPaths {
+            PhotoCacheManager.shared.cancelLoad(for: viewModel.photos[indexPath.row].resizedURL())
+        }
     }
 }

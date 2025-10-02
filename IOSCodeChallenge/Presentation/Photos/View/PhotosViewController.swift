@@ -45,6 +45,7 @@ class PhotosViewController: BaseViewController {
         tv.register(PhotosTableViewCell.self, forCellReuseIdentifier: PhotosTableViewCell.reuseIdentifier)
         tv.dataSource = self
         tv.delegate = self
+        tv.prefetchDataSource = self
         tv.rowHeight = UITableView.automaticDimension
         tv.estimatedRowHeight = 300
         tv.separatorStyle = .none
@@ -219,5 +220,19 @@ extension PhotosViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         viewModel.isFooterLoading ? 44 : 0
+    }
+}
+
+extension PhotosViewController: UITableViewDataSourcePrefetching {
+    func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
+        for indexPath in indexPaths {
+            PhotoCacheManager.shared.loadImage(from: viewModel.photos[indexPath.row].resizedURL())
+        }
+    }
+
+    func tableView(_ tableView: UITableView, cancelPrefetchingForRowsAt indexPaths: [IndexPath]) {
+        for indexPath in indexPaths {
+            PhotoCacheManager.shared.cancelLoad(for: viewModel.photos[indexPath.row].resizedURL())
+        }
     }
 }

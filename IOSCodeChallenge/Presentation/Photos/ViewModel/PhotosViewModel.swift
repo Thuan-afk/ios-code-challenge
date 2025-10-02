@@ -82,11 +82,8 @@ class PhotosViewModel: ObservableObject, PhotosViewModelInput, PhotosViewModelOu
         .receive(on: DispatchQueue.main)
         .sink { [weak self] completion in
             guard let self = self else { return }
-            if (page == 1) {
-                self.isLoading = false
-            } else {
-                self.isFooterLoading = false
-            }
+            self.isLoading = false
+            self.isFooterLoading = false
             if case .failure(let error) = completion {
                 if let netError = error as? NetworkError {
                     switch netError {

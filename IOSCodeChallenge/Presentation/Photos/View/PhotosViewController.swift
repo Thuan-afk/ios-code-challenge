@@ -43,6 +43,7 @@ class PhotosViewController: BaseViewController {
     private lazy var tableView: UITableView = {
         let tv = UITableView()
         tv.register(PhotosTableViewCell.self, forCellReuseIdentifier: PhotosTableViewCell.reuseIdentifier)
+        tv.register(EmptyTableViewCell.self, forCellReuseIdentifier: EmptyTableViewCell.reuseIdentifier)
         tv.dataSource = self
         tv.delegate = self
         tv.prefetchDataSource = self
@@ -194,20 +195,29 @@ extension PhotosViewController: UITableViewDelegate {
 
 extension PhotosViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.photos.count
+        return viewModel.photos.count > 0 ? viewModel.photos.count : 1
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: PhotosTableViewCell.reuseIdentifier, for: indexPath) as? PhotosTableViewCell else {
-            return UITableViewCell()
+        if viewModel.photos.isEmpty {
+                // Tạo cell empty
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: EmptyTableViewCell.reuseIdentifier, for: indexPath) as? EmptyTableViewCell else {
+                return UITableViewCell()
+            }
+            cell.selectionStyle = .none
+            return cell
+        } else {
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: PhotosTableViewCell.reuseIdentifier, for: indexPath) as? PhotosTableViewCell else {
+                return UITableViewCell()
+            }
+            let item = viewModel.photos[indexPath.row]
+            cell.configure(photo: item)
+            return cell
         }
-        let item = viewModel.photos[indexPath.row]
-        cell.configure(photo: item)
-        return cell
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return viewModel.photos[indexPath.row].hightCell
+        return viewModel.photos.count > 0 ? viewModel.photos[indexPath.row].hightCell : tableView.frame.height
     }
     
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {

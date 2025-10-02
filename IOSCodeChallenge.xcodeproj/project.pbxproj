@@ -34,6 +34,7 @@
 		22B361D52E8E514300221315 /* StringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22B361D42E8E514300221315 /* StringExtension.swift */; };
 		22B361D72E8E5AF800221315 /* UIViewControllerExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22B361D62E8E5AF800221315 /* UIViewControllerExtension.swift */; };
 		22B361D92E8EA2AF00221315 /* SkeletonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22B361D82E8EA2AF00221315 /* SkeletonView.swift */; };
+		22B361DB2E8EAADE00221315 /* EmptyTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22B361DA2E8EAADE00221315 /* EmptyTableViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -77,6 +78,7 @@
 		22B361D42E8E514300221315 /* StringExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtension.swift; sourceTree = "<group>"; };
 		22B361D62E8E5AF800221315 /* UIViewControllerExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewControllerExtension.swift; sourceTree = "<group>"; };
 		22B361D82E8EA2AF00221315 /* SkeletonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkeletonView.swift; sourceTree = "<group>"; };
+		22B361DA2E8EAADE00221315 /* EmptyTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyTableViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -262,6 +264,7 @@
 			children = (
 				22B361D82E8EA2AF00221315 /* SkeletonView.swift */,
 				22B361A82E8DEB1E00221315 /* PhotosTableViewCell.swift */,
+				22B361DA2E8EAADE00221315 /* EmptyTableViewCell.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -472,6 +475,7 @@
 				22B361B02E8DF6C700221315 /* AppFlowCoordinator.swift in Sources */,
 				22B361D92E8EA2AF00221315 /* SkeletonView.swift in Sources */,
 				22B361D72E8E5AF800221315 /* UIViewControllerExtension.swift in Sources */,
+				22B361DB2E8EAADE00221315 /* EmptyTableViewCell.swift in Sources */,
 				22B361C22E8E1C1D00221315 /* BaseViewController.swift in Sources */,
 				22B3619B2E8D79C000221315 /* PhotosUseCase.swift in Sources */,
 				22B361B52E8DF75800221315 /* PhotosSceneDIContainer.swift in Sources */,

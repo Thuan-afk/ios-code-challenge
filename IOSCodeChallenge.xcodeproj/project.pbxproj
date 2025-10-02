@@ -57,7 +57,7 @@
 		22B3619D2E8D7A5C00221315 /* PhotoDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoDTO.swift; sourceTree = "<group>"; };
 		22B361A02E8D7B3800221315 /* PhotoApiService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoApiService.swift; sourceTree = "<group>"; };
 		22B361A32E8D7C4E00221315 /* PhotosRepositoryImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosRepositoryImpl.swift; sourceTree = "<group>"; };
-		22B361A52E8DE5AC00221315 /* PhotosViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PhotosViewModel.swift; path = IOSCodeChallenge/Data/Repositorys/PhotosViewModel.swift; sourceTree = SOURCE_ROOT; };
+		22B361A52E8DE5AC00221315 /* PhotosViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PhotosViewModel.swift; path = IOSCodeChallenge/Presentation/Photos/ViewModel/PhotosViewModel.swift; sourceTree = SOURCE_ROOT; };
 		22B361A82E8DEB1E00221315 /* PhotosTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosTableViewCell.swift; sourceTree = "<group>"; };
 		22B361AB2E8DF21E00221315 /* PhotoCacheManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoCacheManager.swift; sourceTree = "<group>"; };
 		22B361AF2E8DF6C700221315 /* AppFlowCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppFlowCoordinator.swift; sourceTree = "<group>"; };
@@ -188,7 +188,7 @@
 		22B3618E2E8D6F2500221315 /* Photos */ = {
 			isa = PBXGroup;
 			children = (
-				22B361902E8D6F4C00221315 /* ViewModel */,
+				22B361D32E8E2EAA00221315 /* ViewModel */,
 				22B3618F2E8D6F4400221315 /* View */,
 			);
 			path = Photos;
@@ -201,14 +201,6 @@
 				22B361912E8D6FA100221315 /* PhotosViewController.swift */,
 			);
 			path = View;
-			sourceTree = "<group>";
-		};
-		22B361902E8D6F4C00221315 /* ViewModel */ = {
-			isa = PBXGroup;
-			children = (
-				22B361A52E8DE5AC00221315 /* PhotosViewModel.swift */,
-			);
-			path = ViewModel;
 			sourceTree = "<group>";
 		};
 		22B361932E8D786000221315 /* Repositorys */ = {
@@ -354,6 +346,14 @@
 				22B361D12E8E249300221315 /* PhotosViewModelTests.swift */,
 			);
 			path = Photos;
+			sourceTree = "<group>";
+		};
+		22B361D32E8E2EAA00221315 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				22B361A52E8DE5AC00221315 /* PhotosViewModel.swift */,
+			);
+			path = ViewModel;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

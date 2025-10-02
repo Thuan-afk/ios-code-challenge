@@ -13,6 +13,10 @@ class PhotosViewModel: ObservableObject {
     private let photosUseCase: PhotosUseCase
     private var cancellables = Set<AnyCancellable>()
     
+    private var page = 1
+    private let limit = 100
+    private var hasMorePages = true
+    
     @Published private(set) var photos: [Photo] = []
     @Published private(set) var errorMessage: String?
     @Published private(set) var isLoading: Bool = false
@@ -21,7 +25,8 @@ class PhotosViewModel: ObservableObject {
         self.photosUseCase = photosUseCase
     }
     
-    func loadImages(page: Int = 1, limit: Int = 100) {
+    func loadImages() {
+        guard !isLoading && hasMorePages else { return }
         isLoading = true
         
         Future<[Photo], Error> { [weak self] promise in
@@ -31,7 +36,7 @@ class PhotosViewModel: ObservableObject {
                 }
             Task {
                 do {
-                    let data = try await self.photosUseCase.execute(page: page, limit: limit)
+                    let data = try await self.photosUseCase.execute(page:self.page, limit: self.limit)
                     promise(.success(data))
                 } catch {
                     promise(.failure(error))
@@ -47,7 +52,11 @@ class PhotosViewModel: ObservableObject {
             }
         } receiveValue: { [weak self] data in
             guard let self = self else { return }
-            self.photos = data
+            if data.isEmpty {
+                self.hasMorePages = false
+            }
+            self.page += 1
+            self.photos += data
         }
         .store(in: &cancellables)
     }

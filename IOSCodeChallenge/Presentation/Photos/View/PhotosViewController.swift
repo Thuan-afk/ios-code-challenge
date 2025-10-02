@@ -108,6 +108,15 @@ class PhotosViewController: BaseViewController {
 }
 
 extension PhotosViewController: UITableViewDelegate {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let offsetY = scrollView.contentOffset.y
+        let contentHeight = scrollView.contentSize.height
+        let height = scrollView.frame.size.height
+
+        if offsetY > contentHeight - height - 100 {
+            viewModel.loadImages()
+        }
+    }
 }
 
 extension PhotosViewController: UITableViewDataSource {
@@ -122,5 +131,17 @@ extension PhotosViewController: UITableViewDataSource {
         let item = viewModel.photos[indexPath.row]
         cell.configure(photo: item)
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        guard viewModel.isLoading else { return nil }
+        let spinner = UIActivityIndicatorView(style: .medium)
+        spinner.startAnimating()
+        spinner.frame = CGRect(x: 0, y: 0, width: tableView.bounds.width, height: 44)
+        return spinner
+    }
+
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        viewModel.isLoading ? 44 : 0
     }
 }

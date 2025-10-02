@@ -59,6 +59,11 @@ class PhotosViewController: BaseViewController {
         view.viewModel = viewModel
         return view
     }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        viewModel.cancelCallApi()
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -108,12 +113,12 @@ class PhotosViewController: BaseViewController {
                     }
                     .store(in: &cancellables)
                 
-                viewModel.$errorMessage
-                    .compactMap { $0 }
-                    .sink { error in
-                        print("Error: \(error)")
-                    }
-                    .store(in: &cancellables)
+        viewModel.$errorMessage
+            .compactMap { $0 }
+            .sink { [weak self] errorMessage in
+                self?.showAlert(message: errorMessage)
+            }
+            .store(in: &cancellables)
         
         viewModel.$isLoading
             .receive(on: DispatchQueue.main)
@@ -130,6 +135,12 @@ class PhotosViewController: BaseViewController {
     @objc private func didPullToRefresh() {
         viewModel.refreshPhotos()
         refreshControl.endRefreshing()
+    }
+    
+    private func showAlert(message: String) {
+        let alert = UIAlertController(title: "", message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        present(alert, animated: true)
     }
 }
 
@@ -199,7 +210,7 @@ extension PhotosViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        guard viewModel.isLoading else { return nil }
+        guard viewModel.isFooterLoading else { return nil }
         let spinner = UIActivityIndicatorView(style: .medium)
         spinner.startAnimating()
         spinner.frame = CGRect(x: 0, y: 0, width: tableView.bounds.width, height: 44)
@@ -207,6 +218,6 @@ extension PhotosViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        viewModel.isLoading ? 44 : 0
+        viewModel.isFooterLoading ? 44 : 0
     }
 }

@@ -11,12 +11,14 @@ import Combine
 protocol PhotosViewModelInput {
     var query: String { get set }
     func loadImages()
+    func cancelCallApi()
 }
 
 protocol PhotosViewModelOutput: AnyObject {
     var photos: [Photo] { get }
     var errorMessage: String? { get }
     var isLoading: Bool { get }
+    var isFooterLoading: Bool { get }
 }
 
 class PhotosViewModel: ObservableObject, PhotosViewModelInput, PhotosViewModelOutput {
@@ -35,8 +37,10 @@ class PhotosViewModel: ObservableObject, PhotosViewModelInput, PhotosViewModelOu
     @Published private(set) var photos: [Photo] = []
     @Published private(set) var errorMessage: String?
     @Published private(set) var isLoading: Bool = false
+    @Published private(set) var isFooterLoading: Bool = false
     
     private var allImages: [Photo] = []
+    private var currentTask: Task<Void, Never>?
     
     init(photosUseCase: PhotosUseCase) {
         self.photosUseCase = photosUseCase
@@ -54,15 +58,19 @@ class PhotosViewModel: ObservableObject, PhotosViewModelInput, PhotosViewModelOu
     }
     
     func loadImages() {
-        guard !isLoading && hasMorePages else { return }
-        isLoading = true
+        guard !isLoading && !isFooterLoading && hasMorePages else { return }
+        if (page == 1) {
+            isLoading = true
+        } else {
+            isFooterLoading = true
+        }
         
         Future<[Photo], Error> { [weak self] promise in
             guard let self = self else {
                     promise(.success([]))
                     return
                 }
-            Task {
+            self.currentTask = Task {
                 do {
                     let data = try await self.photosUseCase.execute(page:self.page, limit: self.limit)
                     promise(.success(data))
@@ -74,9 +82,32 @@ class PhotosViewModel: ObservableObject, PhotosViewModelInput, PhotosViewModelOu
         .receive(on: DispatchQueue.main)
         .sink { [weak self] completion in
             guard let self = self else { return }
-            self.isLoading = false
+            if (page == 1) {
+                self.isLoading = false
+            } else {
+                self.isFooterLoading = false
+            }
             if case .failure(let error) = completion {
-                self.errorMessage = error.localizedDescription
+                if let netError = error as? NetworkError {
+                    switch netError {
+                    case .badURL:
+                        print("URL is incorrect")
+                    case .noData:
+                        print("No data")
+                    case .decodingError:
+                        print("Decoding Error")
+                    case .invalidStatusCode(let code):
+                        self.errorMessage = "Server error: \(code)"
+                    case .noInternet:
+                        self.errorMessage = "No internet connection!"
+                    case .timeout:
+                        self.errorMessage = "Timeout!"
+                    case .unknown(let err):
+                        self.errorMessage = "Unknown error: \(err.localizedDescription)"
+                    }
+                } else {
+                    self.errorMessage = error.localizedDescription
+                }
             }
         } receiveValue: { [weak self] data in
             guard let self = self else { return }
@@ -106,5 +137,14 @@ class PhotosViewModel: ObservableObject, PhotosViewModelInput, PhotosViewModelOu
         hasMorePages = true
         photos = []
         photos.removeAll()
+    }
+    
+    func cancelCallApi() {
+        currentTask?.cancel()
+        currentTask = nil
+    }
+    
+    deinit {
+        cancelCallApi()
     }
 }
